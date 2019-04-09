@@ -4,7 +4,7 @@
 from chomp_board import ChompBoard
 from board_util import BoardUtil
 
-size = (3,4)
+size = (4,4)
 
 def main():
     ##create a chomp_board of size mxn
@@ -52,14 +52,10 @@ def play_chomp(chomp_board):
                         chomp_board.play_move(row,col)
                         chomp_board.showboard()
                 else:
-                    
                     print("Illegal move, please pick move that is non-zero.")
-            
             except ValueError:
-                
                 print("Invalid input, please enter two integers")
             except:
-                
                 print("Input number out of range")
     
           

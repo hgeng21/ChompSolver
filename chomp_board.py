@@ -33,7 +33,8 @@ class ChompBoard(object):
         for i in range(self.size[0]+1):
             for j in range(self.size[1]+1):
                 if self.board[i,j] == 1:
-                    legal_moves.append((i,j)) 
+                    legal_moves.append([i,j]) 
+        legal_moves = np.asarray(legal_moves)
         return legal_moves
     
     
@@ -121,10 +122,10 @@ class ChompBoard(object):
         
     def minimax(self,legal_moves,depth,maxPlayer,player):
         
-        move_values = []
+        move_values = np.zeros(0)
         
         ## if terminal node or max depth, return heuristic value
-        if depth == 0 or legal_moves == []:
+        if depth == 0 or len(legal_moves) == 0:
             if self.current_player==player: 
                 #print("player {} wins,-1".format(3-player))
                 return -1 # if maxPlayer win, return 1, otherwise return -1
@@ -142,7 +143,7 @@ class ChompBoard(object):
             #temp_board.showboard() 
             value= temp_board.minimax(temp_board.genmoves(),depth-1,not maxPlayer,player)
             #print("===for this move, the best value we can get is {}, the best move is {}".format(value, best_move))
-            move_values.append(value)
+            move_values = np.append(move_values,value)
         
         #print("<<<<<<<<<<<<< The move values are: {} >>>>>>>>>>>>>>".format(move_values))
         ## if maximizing player:
