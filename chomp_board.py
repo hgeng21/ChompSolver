@@ -24,8 +24,28 @@ class ChompBoard(object):
         self.value = size[0]*size[1]    ## value used to represent each block
         self.current_player = 1
         self.board = self.gen_empty_board()
-        
-    ## generate empty board of size row,col in 2Darray
+        self.board_ref = self.gen_empty_board_ref()
+      
+      
+    ## generate all legal moves of current state
+    def genmoves(self):
+        legal_moves = []
+        for i in range(self.size[0]+1):
+            for j in range(self.size[1]+1):
+                if self.board[i,j] == 1:
+                    legal_moves.append((i,j)) 
+        return legal_moves
+    
+    
+    ## copy board
+    def copy(self):
+        b = ChompBoard(self.size)
+        b.current_player = self.current_player
+        b.board = np.copy(self.board)
+        return b    
+    
+    
+    ## generate empty board of size row,col in 2D array
     def gen_empty_board(self):
         """
         in[0]: None
@@ -33,15 +53,23 @@ class ChompBoard(object):
         ------------------------------
         0: blocks of chocolates taken
         1: blocks of chocolates not been taken
-        2: paddings
         8: poisoned chocolate
         ------------------------------
-        """
-        board = np.full(self.size,self.value) ##create empty gameboard
+        """        
+        board = np.ones(self.size) ##create empty gameboard
         board[self.size[0]-1,0] = 8
         self.board = np.zeros((self.size[0]+2,self.size[1]+2))    ##initialize self.board with padding background
         self.board[1:self.size[0]+1,1:self.size[1]+1] = board  ##add padding to self.board
-        return self.board
+        return self.board        
+    
+        
+    ## generate empty board of size row,col in 2D array
+    def gen_empty_board_ref(self):
+        board = np.full(self.size,self.value) ##create empty gameboard
+        board[self.size[0]-1,0] = 8
+        self.board_ref = np.zeros((self.size[0]+2,self.size[1]+2))    ##initialize self.board with padding background
+        self.board_ref[1:self.size[0]+1,1:self.size[1]+1] = board  ##add padding to self.board
+        return self.board_ref
     
     ## check if the move given is legal
     def is_legal(self,row,col):
@@ -50,7 +78,7 @@ class ChompBoard(object):
         out[1]: T/F
         ------------------------------  
         """
-        if self.board[row,col]==self.value:
+        if self.board[row,col]!=0:
             return True
         else: return False
         
@@ -67,13 +95,62 @@ class ChompBoard(object):
         
     ## play move, change current player
     def play_move(self,row,col):
+        ## update self.board
+        ## set all removed cells to zero
+        mask = np.zeros((row,self.size[1]-col+1))
+        self.board[1:row+1,col:self.size[1]+1] = mask
+        ## update self.board_ref:
+        ## subtract all removed cells by one
         mask = np.ones((row,self.size[1]-col+1))
-        temp_board = np.zeros((self.size[0]+2,self.size[1]+2))
-        temp_board[1:row+1,col:self.size[1]+1] = mask
-        self.board = self.board - temp_board
+        temp_board_ref = np.zeros((self.size[0]+2,self.size[1]+2))
+        temp_board_ref[1:row+1,col:self.size[1]+1] = mask
+        self.board_ref = self.board_ref - temp_board_ref
         ## change current player
         self.current_player = BoardUtil.opponent(self.current_player)
+    
     
     ## print out gameboard
     def showboard(self):
         print(self.board[1:self.size[0]+1,1:self.size[1]+1])
+        
+        
+    ## print out gameboard reference, used for tracking previous moves and undo
+    def showboard_ref(self):
+        print(self.board_ref[1:self.size[0]+1,1:self.size[1]+1])
+        
+        
+    def minimax(self,legal_moves,depth,maxPlayer,player):
+        
+        move_values = []
+        
+        ## if terminal node or max depth, return heuristic value
+        if depth == 0 or legal_moves == []:
+            if self.current_player==player: 
+                #print("player {} wins,-1".format(3-player))
+                return -1 # if maxPlayer win, return 1, otherwise return -1
+            else: 
+                #print("player {} wins,+1".format(player))
+                return 1
+            
+        #print(">>> Now is player {}'s turn.".format(self.current_player))
+        #print("legal moves: {}".format(legal_moves))
+        
+        for move in legal_moves:
+            #print("---take move {}:".format(move))
+            temp_board = self.copy()
+            temp_board.play_move(move[0],move[1])
+            #temp_board.showboard() 
+            value= temp_board.minimax(temp_board.genmoves(),depth-1,not maxPlayer,player)
+            #print("===for this move, the best value we can get is {}, the best move is {}".format(value, best_move))
+            move_values.append(value)
+        
+        #print("<<<<<<<<<<<<< The move values are: {} >>>>>>>>>>>>>>".format(move_values))
+        ## if maximizing player:
+        if maxPlayer:
+            best = max(move_values)
+        else:
+            best = min(move_values)
+        
+        #print("final best = {}, best_move = {}".format(best, best_move))
+        #print("===========================================")
+        return best
