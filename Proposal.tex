@@ -1,0 +1,60 @@
+\documentclass[11pt,oneside,letterpaper]{article}
+
+
+\usepackage[
+margin=1.0cm
+]{geometry}
+
+
+
+%%%% Start of document %%%% 
+\begin{document}
+\pagestyle{empty}
+%%%%\pagestyle{plain}
+%%%%\pagenumbering{arabic}
+
+%%%%% Title of proposal %%%%% 
+\begin{center} 
+\bfseries\uppercase{
+CMPUT 497 Progress report: game of chomp
+}
+\end{center}
+
+%%%%% Body of Proposal %%%%%
+\section{Achievements}
+
+Chomp!\\
+1. It has brief and clear rules, easy to understand and implement\\
+2. Applicable for deep learning implementation (we have limited knowledge on reinforcement learning about abstract strategy games and are willing to develop further understanding of it)\\
+3. Chomp has the property of being impartial, hence two players can have equal \\
+4. Flexible rules , has capability of making changes to the basic rules, such as moving the poisoned piece somewhere\\
+5. Just love chocolates
+
+\section{Working prototype}
+We have implemented the player for 5*8 chomp using Python without Artificial Intellgence embedded. This solver is able to find the optimum winning move for different board conditions.
+Github link: https://github.com/hgeng21/ChompSolver
+We will further modify this prototype with unsupervised learning patterns
+
+
+\section{Choice of game implementation type and reason}
+We will train an AI player using reinforcement learning (unsupervised) method, using this model to find an optimal policy. Since the game of Chomp has a first player winning strategy, we could compare the resulting policy to the existing winning strategy. 
+
+\section{Expected or unexpected}
+Without considering about the time used for training, writing the program itself should take no more than one month (we both have other course projects to work on, so the time we can have for this project is likely to be less than 1.5 hours per day).
+
+\section{Goals for this project}
+Primarily, the goal is to successfully implement a solver program for the game of Chomp using reinforcement learning method. We are expecting the program to generate an optimum policy in the end of the trainning process, so that we can then use the obtained policy to write another player program where we can play with an AI player whose moves are based on the policy we just generated.
+
+All of the above are supposed to be done without UI display, but we would like to further implement a visualizer, most likely in javascript, to display the gaming process, if we still have sufficient time left.
+
+Since this game already has a first-player winning strategy, we can compare our derived policy to the existing strategy so that we know if our goal is successfully met or not.
+
+\section{Coding background}
+The project code written by both of us will be mostly originated in this semester, where only the partial framework of reinforcement learning process will be derived from previous work done by Han last semester.
+
+\section{Additional remarks}
+We would analyze the gaming strategy involved in this game by hand, using 2x2, 3x3, 4x7 boardsize and probably more different sizes as well. This strategy will be compared with the widely recognized strategy and our optimal policy as well.
+
+\end{document}
+
+
