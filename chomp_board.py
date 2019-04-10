@@ -144,6 +144,10 @@ class ChompBoard(object):
             value= temp_board.minimax(temp_board.genmoves(),depth-1,not maxPlayer,player)
             #print("===for this move, the best value we can get is {}, the best move is {}".format(value, best_move))
             move_values = np.append(move_values,value)
+            if value == -1 and not maxPlayer:
+                move_values = [-1]
+                break
+        
         
         #print("<<<<<<<<<<<<< The move values are: {} >>>>>>>>>>>>>>".format(move_values))
         ## if maximizing player:

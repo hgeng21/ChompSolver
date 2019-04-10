@@ -4,7 +4,7 @@
 from chomp_board import ChompBoard
 from board_util import BoardUtil
 
-size = (4,4)
+size = (4,5)
 
 def main():
     ##create a chomp_board of size mxn

@@ -8,42 +8,16 @@ class BoardUtil(object):
     @staticmethod
     def opponent(player):
         return 3-player
-    
-    
-    @staticmethod
-    # first version, not in use anymore
-    def solve_chomp_v1(board):
-        ## first find all legal moves
-        legal_moves = board.genmoves()
-        
-        ## if there are no legal moves, meaning only the poisoned chocolate is left
-        ## opponent wins
-        if legal_moves == []:
-            print("No winning moves for player {}, player {} wins.".format(board.current_player, 3-board.current_player))
-            return True
-        else:
-            ## init list to contain value for each legal move
-            move_values = []
-            
-            ## remember the current player
-            player = board.current_player
-            
-            ## try each move and get value for that move
-            for move in legal_moves:
-                temp_board = board.copy()
-                value = 0
-                value = temp_board.try_move(move,player,value)
-                move_values.append(value)
-                
-            best_move = legal_moves[move_values.index(max(move_values))]
-            print("the best move for player {} is: {}".format(player, best_move))
-        
-
+  
     @staticmethod
     def solve_chomp(board):
+        
+        ## init winning move to None
+        winning_move = []
+        
         ## first find all legal moves
         legal_moves = board.genmoves()
-        depth = 10 #board.size[0]*board.size[1]-1
+        depth = board.size[0]*board.size[1]//3*2
         ## if there are no legal moves, meaning only the poisoned chocolate is left
         ## opponent wins
         if len(legal_moves) == 0:
@@ -61,11 +35,14 @@ class BoardUtil(object):
                 temp_board = board.copy()
                 temp_board.play_move(move[0],move[1])
                 value = temp_board.minimax(temp_board.genmoves(),depth-1,not maxPlayer,player)
-                move_values = np.append(move_values,value)  
-                
+                move_values = np.append(move_values,value) 
+                if value == 1: 
+                    winning_move = legal_moves[len(move_values)-1]
+                    break
+            
             print("the move_values are {}".format(move_values))
-            if all(i==-1 for i in move_values):
-                print("No winning move for player {}, best move can be {}.".format(board.current_player,legal_moves[np.argmax(move_values)]))              
+            if winning_move == []:
+                print("No winning move for player {}.".format(board.current_player))              
             else:
-                print("The best move for player {} is: {}".format(player, legal_moves[np.argmax(move_values)]))
+                print("The best move for player {} is: {}".format(player, winning_move))
     
